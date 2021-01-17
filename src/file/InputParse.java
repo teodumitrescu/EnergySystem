@@ -6,7 +6,12 @@ import changecomponents.DistributorChange;
 import changecomponents.ProducerChange;
 import changecomponents.Update;
 import core.Database;
-import entities.*;
+
+import entities.Producer;
+import entities.Consumer;
+import entities.Distributor;
+import entities.EnergyType;
+import entities.Factory;
 import strategies.EnergyChoiceStrategyType;
 import useful.Constants;
 
@@ -98,7 +103,8 @@ public final class InputParse {
         }
     }
 
-    public void parseDistributorChanges(JsonNode update, List<DistributorChange> distributorChangesList, Factory f) {
+    public void parseDistributorChanges(JsonNode update,
+                                        List<DistributorChange> distributorChangesList, Factory f) {
 
         JsonNode distributorChangesNode = update.get(Constants.DISTRIBUTOR_CHANGES);
 
@@ -157,7 +163,8 @@ public final class InputParse {
             parseDistributorChanges(update, distributorChangesList, f);
             parseProducerChanges(update, producerChangesList);
 
-            Update newUpdate = new Update(newConsumersList, distributorChangesList, producerChangesList);
+            Update newUpdate = new Update(newConsumersList,
+                                distributorChangesList, producerChangesList);
             Database.getInstance().getMonthlyUpdates().add(newUpdate);
         }
     }

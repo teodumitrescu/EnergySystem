@@ -9,6 +9,6 @@ public final class QuantityComparator implements Comparator<Producer> {
         if (o1.getEnergyPerDistributor() == o2.getEnergyPerDistributor()) {
             return Integer.compare(o1.getId(), o2.getId());
         }
-        return Integer.compare(o1.getEnergyPerDistributor(), o2.getEnergyPerDistributor());
+        return Integer.compare(o2.getEnergyPerDistributor(), o1.getEnergyPerDistributor());
     }
 }

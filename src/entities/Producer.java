@@ -1,8 +1,10 @@
 package entities;
 
+import comparators.IdDistComparator;
 import outputcomponents.MonthlyStatus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 
@@ -15,7 +17,8 @@ public final class Producer extends Observable {
     private List<MonthlyStatus> monthlyStats = new ArrayList<>();
     private List<Distributor> currentDistributors = new ArrayList<>();
 
-    public Producer(int id, EnergyType energyType, int maxDistributors, double priceKW, int energyPerDistributor) {
+    public Producer(int id, EnergyType energyType, int maxDistributors,
+                    double priceKW, int energyPerDistributor) {
         this.id = id;
         this.energyType = energyType;
         this.maxDistributors = maxDistributors;
@@ -86,8 +89,9 @@ public final class Producer extends Observable {
 
     public void updateMonthlyStats(int month) {
         ArrayList<Integer> crtDistributorsId = new ArrayList<>();
-        if (!this.getCurrentDistributors().isEmpty()) {
-            for (Distributor distributor : this.getCurrentDistributors()) {
+        if (!getCurrentDistributors().isEmpty()) {
+            Collections.sort(getCurrentDistributors(), new IdDistComparator());
+            for (Distributor distributor : getCurrentDistributors()) {
                 crtDistributorsId.add(distributor.getId());
             }
         }

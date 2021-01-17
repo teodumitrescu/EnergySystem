@@ -160,10 +160,10 @@ public final class Distributor extends Entity {
         for (Consumer consumer : this.getCurrentConsumers()) {
             consumer.setMustChangeDistributor(1);
         }
-        for (Producer producer : currentProducers) {
-            producer.getCurrentDistributors().remove(this);
-            producer.deleteObserver(this);
-        }
+        //for (Producer producer : currentProducers) {
+        //    producer.getCurrentDistributors().remove(this);
+        //    producer.deleteObserver(this);
+        //}
         currentConsumers.clear();
         numberOfClients = 0;
     }
@@ -173,13 +173,14 @@ public final class Distributor extends Entity {
         for (Producer producer : currentProducers) {
             cost += producer.getEnergyPerDistributor() * producer.getPriceKW();
         }
-        this.productionCost = (int) Math.round(Math.floor(cost / 10));
+        this.productionCost = (int) Math.round(Math.floor(cost / Constants.DIVISOR));
     }
 
     public void findNewProducers() {
         if (this.getCurrentProducers() != null) {
             for (Producer producer : this.getCurrentProducers()) {
                 producer.deleteObserver(this);
+                producer.getCurrentDistributors().remove(this);
             }
             this.getCurrentProducers().clear();
         }

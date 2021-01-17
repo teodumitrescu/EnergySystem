@@ -2,11 +2,11 @@ package core;
 
 import changecomponents.DistributorChange;
 import changecomponents.ProducerChange;
-import comparators.IdComparator;
+import comparators.IdDistComparator;
+import comparators.IdProdComparator;
 import entities.Consumer;
 import entities.Distributor;
 import entities.Producer;
-import useful.Constants;
 
 import java.util.Collections;
 
@@ -30,7 +30,9 @@ public final class Simulator {
      */
     public void initialRound() {
 
-        for (Distributor crtDistributor : Database.getInstance().getDistributorsMap().values()) {
+        Collections.sort(Database.getInstance().getProducers(), new IdProdComparator());
+
+        for (Distributor crtDistributor : Database.getInstance().getDistributors()) {
             crtDistributor.findNewProducers();
         }
 
@@ -69,11 +71,6 @@ public final class Simulator {
             }
         }
 
-//        Collections.sort(Database.getInstance().getProducers(), new IdComparator());
-//        for (Producer producer : Database.getInstance().getProducers()) {
-//            producer.updateMonthlyStats(Constants.FIRST_MONTH);
-//        }
-
         //distributors pay their costs
         for (Distributor distributor : Database.getInstance().getDistributorsMap().values()) {
             if (!distributor.getIsBankrupt()) {
@@ -86,7 +83,7 @@ public final class Simulator {
             }
         }
 
-        //consumers switch (or not) to a new found contract
+        //bankrupt consumers are removed from their distributors
         for (Consumer consumer : Database.getInstance().getConsumersMap().values()) {
             if (consumer.getIsBankrupt()) {
                 if (consumer.getCurrentDistributor().getCurrentConsumers().contains(consumer)) {
@@ -96,7 +93,19 @@ public final class Simulator {
                 }
             }
         }
+
+        for (Distributor distributor : Database.getInstance().getDistributorsMap().values()) {
+            if (distributor.getIsBankrupt()) {
+                for (Producer producer : distributor.getCurrentProducers()) {
+                    producer.getCurrentDistributors().remove(distributor);
+                    producer.deleteObserver(distributor);
+                }
+            }
+        }
+
     }
+
+
 
     /**
      * function that plays the simulation for the given number of turns
@@ -106,25 +115,14 @@ public final class Simulator {
 
             //adding changes for distributors
             for (DistributorChange distributorChange : Database.getInstance().getMonthlyUpdates().get(i).getDistributorChangesList()) {
-                Database.getInstance().getDistributorsMap().get(distributorChange.getId()).setInfrastructureCost(distributorChange.getInfrastructureCost());
-            }
-
-            for (ProducerChange producerChange : Database.getInstance().getMonthlyUpdates().get(i).getProducerChangesList()) {
-                Database.getInstance().getProducersMap().get(producerChange.getId()).setEnergyPerDistributor(producerChange.getEnergyPerDistributor());
-                Database.getInstance().getProducersMap().get(producerChange.getId()).notifyDistributors();
-            }
-            Database.getInstance().updateProducersList();
-
-            //finding new producers for the distributors whose producers have changed their state
-            for (Distributor crtDistributor : Database.getInstance().getDistributors()) {
-                if (crtDistributor.isMustFindNewProducers()) {
-                    crtDistributor.findNewProducers();
-                }
+                int id = distributorChange.getId();
+                int infCost = distributorChange.getInfrastructureCost();
+                Database.getInstance().getDistributorsMap().get(id).setInfrastructureCost(infCost);
             }
 
             //updating the profit and contract price for distributors
             for (Distributor distributor : Database.getInstance().getDistributorsMap().values()) {
-                distributor.computeProductionCost();
+                //distributor.computeProductionCost();
                 distributor.updateProfit();
                 distributor.updateFinalContractPrice();
             }
@@ -156,26 +154,20 @@ public final class Simulator {
                 }
             }
 
-
             //consumers pay their bills
             for (Consumer consumer : Database.getInstance().getConsumersMap().values()) {
                 if (!consumer.getIsBankrupt()) {
                     if ((consumer.getBudget() - consumer.computePayroll()) < 0) {
                         if (consumer.getPenalty() != 0) {
                             consumer.setIsBankrupt(true);
-
                         } else {
+                            //consumer.payBills();
                             consumer.updateBillsPenalty();
                         }
                     } else {
                         consumer.payBills();
                     }
                 }
-            }
-
-            Collections.sort(Database.getInstance().getProducers(), new IdComparator());
-            for (Producer producer : Database.getInstance().getProducers()) {
-                producer.updateMonthlyStats(i + 1);
             }
 
             //distributors pay their costs
@@ -190,6 +182,29 @@ public final class Simulator {
                 }
             }
 
+            for (ProducerChange producerChange : Database.getInstance().getMonthlyUpdates().get(i).getProducerChangesList()) {
+                int crtId = producerChange.getId();
+                int energy = producerChange.getEnergyPerDistributor();
+                Database.getInstance().getProducersMap().get(crtId).setEnergyPerDistributor(energy);
+                Database.getInstance().getProducersMap().get(crtId).notifyDistributors();
+            }
+            Database.getInstance().updateProducersList();
+
+            Collections.sort(Database.getInstance().getDistributors(), new IdDistComparator());
+            //finding new producers for the distributors whose producers have changed their state
+            for (Distributor crtDistributor : Database.getInstance().getDistributors()) {
+                if (crtDistributor.isMustFindNewProducers() && !crtDistributor.getIsBankrupt()) {
+                    crtDistributor.findNewProducers();
+                    crtDistributor.computeProductionCost();
+                }
+            }
+
+
+            Collections.sort(Database.getInstance().getProducers(), new IdProdComparator());
+            for (Producer producer : Database.getInstance().getProducers()) {
+                producer.updateMonthlyStats(i + 1);
+            }
+
             //bankrupt consumers are eliminated from the distributors list
             for (Consumer consumer : Database.getInstance().getConsumersMap().values()) {
                 if (consumer.getIsBankrupt()) {
@@ -197,6 +212,15 @@ public final class Simulator {
                         consumer.getCurrentDistributor().getCurrentConsumers().remove(consumer);
                         int value = consumer.getCurrentDistributor().getNumberOfClients();
                         consumer.getCurrentDistributor().setNumberOfClients(value - 1);
+                    }
+                }
+            }
+
+            for (Distributor distributor : Database.getInstance().getDistributorsMap().values()) {
+                if (distributor.getIsBankrupt()) {
+                    for (Producer producer : distributor.getCurrentProducers()) {
+                        producer.getCurrentDistributors().remove(distributor);
+                        producer.deleteObserver(distributor);
                     }
                 }
             }

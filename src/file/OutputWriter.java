@@ -57,9 +57,10 @@ public final class OutputWriter {
                 clients.add(client);
             }
             Collections.sort(clients, new ClientsOutputComparator());
-            DistributorOutput newDist = new DistributorOutput(distributor.getId(), distributor.getEnergyNeededKW(),
-                    distributor.getFinalContractPrice(), distributor.getBudget(),
-                    distributor.getProducerStrategy().label, distributor.getIsBankrupt(), clients);
+            DistributorOutput newDist = new DistributorOutput(distributor.getId(),
+                    distributor.getEnergyNeededKW(), distributor.getFinalContractPrice(),
+                    distributor.getBudget(), distributor.getProducerStrategy().getLabel(),
+                    distributor.getIsBankrupt(), clients);
             distributorOutputs.add(newDist);
         }
         return distributorOutputs;
@@ -70,8 +71,9 @@ public final class OutputWriter {
         List<ProducerOutput> producerOutputs = new ArrayList<>();
 
         for (Producer producer : Database.getInstance().getProducersMap().values()) {
-            ProducerOutput newProd = new ProducerOutput(producer.getId(), producer.getMaxDistributors(),
-                    producer.getPriceKW(), producer.getEnergyType().getLabel(), producer.getEnergyPerDistributor(),
+            ProducerOutput newProd = new ProducerOutput(producer.getId(),
+                    producer.getMaxDistributors(), producer.getPriceKW(),
+                    producer.getEnergyType().getLabel(), producer.getEnergyPerDistributor(),
                     producer.getMonthlyStats());
             producerOutputs.add(newProd);
         }

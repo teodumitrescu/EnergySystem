@@ -13,7 +13,8 @@ public final class DistributorOutput {
     private List<DistributorClient> contracts;
 
     public DistributorOutput(int id, int energyNeededKW, int contractCost, int budget,
-                             String producerStrategy, boolean isBankrupt, List<DistributorClient> contracts) {
+                             String producerStrategy, boolean isBankrupt,
+                             List<DistributorClient> contracts) {
         this.id = id;
         this.energyNeededKW = energyNeededKW;
         this.contractCost = contractCost;
@@ -81,8 +82,8 @@ public final class DistributorOutput {
 
     @Override
     public String toString() {
-        return "DistributorOutput{" +
-                "id=" + id
+        return "DistributorOutput{"
+                + "id=" + id
                 + ", energyNeededKW=" + energyNeededKW
                 + ", contractCost=" + contractCost
                 + ", budget=" + budget

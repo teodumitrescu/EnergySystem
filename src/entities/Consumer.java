@@ -51,6 +51,30 @@ public final class Consumer extends Entity {
         this.oldDistributor = oldDistributor;
     }
 
+    public int getCurrentBill() {
+        return currentBill;
+    }
+
+    public void setCurrentBill(final int currentBill) {
+        this.currentBill = currentBill;
+    }
+
+    public int getPenalty() {
+        return penalty;
+    }
+
+    public void setPenalty(final int penalty) {
+        this.penalty = penalty;
+    }
+
+    public Distributor getCurrentDistributor() {
+        return currentDistributor;
+    }
+
+    public void setCurrentDistributor(final Distributor currentDistributor) {
+        this.currentDistributor = currentDistributor;
+    }
+
     /**
      * adds the monthly salary to the consumer's budget
      */
@@ -64,14 +88,14 @@ public final class Consumer extends Entity {
      * @return the sum to be paid by the consumer
      */
     public int computePayroll() {
-        if (penalty != 0) {
-            if (this.oldDistributor != null) {
-                if (!this.oldDistributor.equals(currentDistributor)) {
-                    return (int) Math.floor(Constants.TOTAL_PERCENT * penalty);
-                }
-            }
-        }
-        return currentBill + (int) Math.floor(Constants.TOTAL_PERCENT * penalty);
+//        if (penalty != 0) {
+//            if (oldDistributor != null) {
+//                if (!oldDistributor.equals(currentDistributor)) {
+//                    return (int) Math.round(Math.floor(Constants.TOTAL_PERCENT * penalty));
+//                }
+//            }
+//        }
+        return (int) Math.round(Math.floor(Constants.TOTAL_PERCENT * penalty) + currentBill);
     }
 
     /**
@@ -108,54 +132,38 @@ public final class Consumer extends Entity {
         mustChangeDistributor = 0;
     }
 
-    public int getCurrentBill() {
-        return currentBill;
-    }
-
-    public void setCurrentBill(final int currentBill) {
-        this.currentBill = currentBill;
-    }
-
-    public int getPenalty() {
-        return penalty;
-    }
-
-    public void setPenalty(final int penalty) {
-        this.penalty = penalty;
-    }
-
-    public Distributor getCurrentDistributor() {
-        return currentDistributor;
-    }
-
-    public void setCurrentDistributor(final Distributor currentDistributor) {
-        this.currentDistributor = currentDistributor;
-    }
-
     /**
      * function in which the consumer pays the bills and
      * penalties to his distributors
      */
     public void payBills() {
-        int value = this.currentDistributor.getBudget();
+        int value;
         if (penalty != 0) {
-            if (this.oldDistributor != null) {
-                if (this.oldDistributor.equals(currentDistributor)) {
-                    this.currentDistributor.setBudget(value + this.computePayroll());
-                    penalty = 0;
-                } else {
-                    value = this.oldDistributor.getBudget();
-                    this.oldDistributor.setBudget(value + this.computePayroll());
-                    penalty = currentBill;
-                    this.setOldDistributor(currentDistributor);
-                }
+            value = oldDistributor.getBudget();
+            oldDistributor.setBudget(value + computePayroll());
+            if (oldDistributor.equals(currentDistributor)) {
+                penalty = 0;
+            } else {
+                updateBillsPenalty();
+                setOldDistributor(currentDistributor);
             }
         } else {
-                value = this.currentDistributor.getBudget();
-                this.currentDistributor.setBudget(value + this.computePayroll());
+            value = currentDistributor.getBudget();
+            currentDistributor.setBudget(value + computePayroll());
         }
         value = this.getBudget();
-        this.setBudget((value - this.computePayroll()));
+        this.setBudget((value - computePayroll()));
+
+//        int value = this.currentDistributor.getBudget();
+//        this.currentDistributor.setBudget(value + currentBill);
+//        if (penalty != 0) {
+//            value = this.oldDistributor.getBudget();
+//            this.oldDistributor.setBudget(value
+//                    + (int) Math.floor(Constants.TOTAL_PERCENT * penalty));
+//            penalty = 0;
+//        }
+//        value = this.getBudget();
+//        this.setBudget((value - this.computePayroll()));
     }
 
     @Override

@@ -10,7 +10,8 @@ public final class Update {
     private List<DistributorChange> distributorChangesList;
     private List<ProducerChange> producerChangesList;
 
-    public Update(final List<Consumer> newConsumersList, final List<DistributorChange> distributorChangesList,
+    public Update(final List<Consumer> newConsumersList,
+                  final List<DistributorChange> distributorChangesList,
                   final List<ProducerChange> producerChangesList) {
         this.newConsumersList = newConsumersList;
         this.distributorChangesList = distributorChangesList;

@@ -20,8 +20,9 @@ public final class Factory {
         }
     }
 
-    public Producer createProducer(final int id, final EnergyType energyType, final int maxDistributors,
-                                   final double priceKW, final int energyPerDistributor) {
+    public Producer createProducer(final int id, final EnergyType energyType,
+                                   final int maxDistributors, final double priceKW,
+                                   final int energyPerDistributor) {
         return new Producer(id, energyType, maxDistributors, priceKW, energyPerDistributor);
     }
 }
