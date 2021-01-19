@@ -4,6 +4,7 @@ import outputcomponents.DistributorClient;
 
 import java.util.Comparator;
 
+//comparator used to sort consumers by remained contract months and then by id
 public final class ClientsOutputComparator implements Comparator<DistributorClient> {
     @Override
     public int compare(final DistributorClient o1, final DistributorClient o2) {

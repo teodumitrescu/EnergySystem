@@ -22,7 +22,6 @@ public final class Main {
         Simulator.getInstance().initialRound();
         Simulator.getInstance().playSimulation();
 
-
         OutputWriter writer = new OutputWriter(args[1]);
         writer.writeData();
     }

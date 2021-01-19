@@ -126,9 +126,12 @@ public final class Database {
         Collections.sort(this.distributors, new ContractPriceComparator());
     }
 
+    /**
+     * function that reinitializes the list of producers with
+     * all their new values in  month
+     */
     public void updateProducersList() {
         this.producers.clear();
         this.producers.addAll(this.producersMap.values());
-        //Collections.sort(this.producers);
     }
 }

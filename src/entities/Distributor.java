@@ -1,15 +1,15 @@
 package entities;
 
 import strategies.EnergyChoiceStrategyType;
-import strategies.Strategy;
 import strategies.StrategyFactory;
 import useful.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
-public final class Distributor extends Entity {
+public final class Distributor extends Entity implements Observer {
     private int contractLength;
     private int infrastructureCost;
     private int energyNeededKW;
@@ -160,14 +160,14 @@ public final class Distributor extends Entity {
         for (Consumer consumer : this.getCurrentConsumers()) {
             consumer.setMustChangeDistributor(1);
         }
-        //for (Producer producer : currentProducers) {
-        //    producer.getCurrentDistributors().remove(this);
-        //    producer.deleteObserver(this);
-        //}
         currentConsumers.clear();
         numberOfClients = 0;
     }
 
+    /**
+     * function which calculates the production cost based on
+     * the producers that
+     */
     public void computeProductionCost() {
         double cost = 0;
         for (Producer producer : currentProducers) {
@@ -176,6 +176,10 @@ public final class Distributor extends Entity {
         this.productionCost = (int) Math.round(Math.floor(cost / Constants.DIVISOR));
     }
 
+    /**
+     * function in which the distributor finds new
+     * producers using a certain strategy
+     */
     public void findNewProducers() {
         if (this.getCurrentProducers() != null) {
             for (Producer producer : this.getCurrentProducers()) {
@@ -184,9 +188,7 @@ public final class Distributor extends Entity {
             }
             this.getCurrentProducers().clear();
         }
-        StrategyFactory strFactory = new StrategyFactory();
-        Strategy str = strFactory.createStrategy(this);
-        str.applyStrategy(this);
+        StrategyFactory.getInstance().createStrategy(this).applyStrategy(this);
         this.mustFindNewProducers = false;
     }
 

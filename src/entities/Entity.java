@@ -1,8 +1,6 @@
 package entities;
 
-import java.util.Observer;
-
-public abstract class Entity implements Observer {
+public abstract class Entity {
         private int id;
         private int budget;
         private boolean isBankrupt = false;

@@ -2,6 +2,7 @@ package outputcomponents;
 
 import java.util.List;
 
+//class that stores the status of a producer in a certain month
 public final class MonthlyStatus {
     private int month;
     private List<Integer> distributorsIds;

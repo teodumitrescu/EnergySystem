@@ -7,6 +7,7 @@ import entities.Producer;
 
 import java.util.Collections;
 
+//class for the price strategy applied by a distributor
 public final class PriceStrategy implements Strategy {
 
     @Override

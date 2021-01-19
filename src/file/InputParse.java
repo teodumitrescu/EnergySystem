@@ -28,7 +28,11 @@ public final class InputParse {
         this.filepath = filepath;
     }
 
-    public void parseConsumers(JsonNode inputNode, Factory f) throws IOException {
+    /**
+     * function for parsing json node into consumers
+     * @param inputNode the json node to be parsed
+     */
+    public void parseConsumers(JsonNode inputNode) {
 
         JsonNode consNode = inputNode.get(Constants.INITIAL_DATA).get(Constants.CONSUMERS);
 
@@ -37,7 +41,7 @@ public final class InputParse {
             for (JsonNode consumer : consNode) {
                 int id = consumer.get(Constants.CONSUMER_ID).asInt();
                 int initBudget = consumer.get(Constants.INITIAL_BUDGET).asInt();
-                Consumer cons = (Consumer) f.createEntity(Constants.CONSUMER, id, initBudget);
+                Consumer cons = (Consumer) Factory.getInstance().createEntity(Constants.CONSUMER, id, initBudget);
                 cons.setMonthlyIncome(consumer.get(Constants.MONTHLY_INCOME).asInt());
 
                 Database.getInstance().getConsumersMap().put(id, cons);
@@ -45,7 +49,11 @@ public final class InputParse {
         }
     }
 
-    public void parseDistributors(JsonNode inputNode, Factory f) throws IOException {
+    /**
+     * function for parsing json node into distributors
+     * @param inputNode the json node to be parsed
+     */
+    public void parseDistributors(JsonNode inputNode) {
 
         JsonNode distNode = inputNode.get(Constants.INITIAL_DATA).get(Constants.DISTRIBUTORS);
 
@@ -53,7 +61,7 @@ public final class InputParse {
             for (JsonNode distributor : distNode) {
                 int id = distributor.get(Constants.DISTRIBUTOR_ID).asInt();
                 int initBudget = distributor.get(Constants.INITIAL_BUDGET).asInt();
-                Distributor newDist = (Distributor) f.createEntity(Constants.DISTRIBUTOR, id, initBudget);
+                Distributor newDist = (Distributor) Factory.getInstance().createEntity(Constants.DISTRIBUTOR, id, initBudget);
                 newDist.setContractLength(distributor.get(Constants.CONTRACT_LENGTH).asInt());
                 newDist.setInfrastructureCost(distributor.get(Constants.INITIAL_INFRASTRUCTURE_COST).asInt());
                 newDist.setEnergyNeededKW(distributor.get(Constants.ENERGY_NEEDED_KW).asInt());
@@ -68,7 +76,11 @@ public final class InputParse {
         }
     }
 
-    public void parseProducers(JsonNode inputNode) throws IOException {
+    /**
+     * function for parsing json node into producers
+     * @param inputNode the json node to be parsed
+     */
+    public void parseProducers(JsonNode inputNode) {
 
         JsonNode prodNode = inputNode.get(Constants.INITIAL_DATA).get(Constants.PRODUCERS);
 
@@ -88,7 +100,13 @@ public final class InputParse {
         }
     }
 
-    public void parseNewConsumers(JsonNode update, List<Consumer> newConsumersList, Factory f) {
+    /**
+     * function to parse json node into consumers
+     * @param update the json node with updates
+     * @param newConsumersList the list where new
+     *                         consumers are added
+     */
+    public void parseNewConsumers(JsonNode update, List<Consumer> newConsumersList) {
 
         JsonNode newConsumersNode = update.get(Constants.NEW_CONSUMERS);
 
@@ -96,15 +114,23 @@ public final class InputParse {
             for (JsonNode crtCons : newConsumersNode) {
                 int id = crtCons.get(Constants.CONSUMER_ID).asInt();
                 int initBudget = crtCons.get(Constants.INITIAL_BUDGET).asInt();
-                Consumer c = (Consumer) f.createEntity(Constants.CONSUMER, id, initBudget);
+                Consumer c = (Consumer) Factory.getInstance().createEntity(Constants.CONSUMER, id, initBudget);
                 c.setMonthlyIncome(crtCons.get(Constants.MONTHLY_INCOME).asInt());
                 newConsumersList.add(c);
             }
         }
     }
 
+    /**
+     * function to parse json node into changes for
+     * distributors
+     * @param update the json node with updates
+     * @param distributorChangesList the list where
+     *        distributor changes are stored
+     *
+     */
     public void parseDistributorChanges(JsonNode update,
-                                        List<DistributorChange> distributorChangesList, Factory f) {
+                                        List<DistributorChange> distributorChangesList) {
 
         JsonNode distributorChangesNode = update.get(Constants.DISTRIBUTOR_CHANGES);
 
@@ -119,6 +145,14 @@ public final class InputParse {
 
     }
 
+    /**
+     * function to parse json node into changes for
+     * producers
+     * @param update the json node with updates
+     * @param producerChangesList the list where
+     *        producer changes are stored
+     *
+     */
     public void parseProducerChanges(JsonNode update, List<ProducerChange> producerChangesList) {
 
         JsonNode producerChangesNode = update.get(Constants.PRODUCER_CHANGES);
@@ -141,14 +175,14 @@ public final class InputParse {
     public void readInitialData() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File(filepath);
-        Factory f = new Factory();
+
         JsonNode inputNode = objectMapper.readTree(file);
 
         int numberOfTurns = inputNode.get(Constants.NUMBER_OF_TURNS).asInt();
         Database.getInstance().setNumberOfTurns(numberOfTurns);
 
-        parseConsumers(inputNode, f);
-        parseDistributors(inputNode, f);
+        parseConsumers(inputNode);
+        parseDistributors(inputNode);
         parseProducers(inputNode);
 
         JsonNode monthlyUpdatesNode = inputNode.get(Constants.MONTHLY_UPDATES);
@@ -159,8 +193,8 @@ public final class InputParse {
             List<DistributorChange> distributorChangesList = new ArrayList<>();
             List<ProducerChange> producerChangesList = new ArrayList<>();
 
-            parseNewConsumers(update, newConsumersList, f);
-            parseDistributorChanges(update, distributorChangesList, f);
+            parseNewConsumers(update, newConsumersList);
+            parseDistributorChanges(update, distributorChangesList);
             parseProducerChanges(update, producerChangesList);
 
             Update newUpdate = new Update(newConsumersList,

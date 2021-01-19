@@ -3,8 +3,6 @@ package entities;
 import core.Database;
 import useful.Constants;
 
-import java.util.Observable;
-
 public final class Consumer extends Entity {
     private int monthlyIncome;
     private int currentBill = 0;
@@ -88,13 +86,6 @@ public final class Consumer extends Entity {
      * @return the sum to be paid by the consumer
      */
     public int computePayroll() {
-//        if (penalty != 0) {
-//            if (oldDistributor != null) {
-//                if (!oldDistributor.equals(currentDistributor)) {
-//                    return (int) Math.round(Math.floor(Constants.TOTAL_PERCENT * penalty));
-//                }
-//            }
-//        }
         return (int) Math.round(Math.floor(Constants.TOTAL_PERCENT * penalty) + currentBill);
     }
 
@@ -153,20 +144,5 @@ public final class Consumer extends Entity {
         }
         value = this.getBudget();
         this.setBudget((value - computePayroll()));
-
-//        int value = this.currentDistributor.getBudget();
-//        this.currentDistributor.setBudget(value + currentBill);
-//        if (penalty != 0) {
-//            value = this.oldDistributor.getBudget();
-//            this.oldDistributor.setBudget(value
-//                    + (int) Math.floor(Constants.TOTAL_PERCENT * penalty));
-//            penalty = 0;
-//        }
-//        value = this.getBudget();
-//        this.setBudget((value - this.computePayroll()));
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
     }
 }

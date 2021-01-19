@@ -21,7 +21,6 @@ public final class Constants {
     public static final String PRODUCER_STRATEGY = "producerStrategy";
     public static final String NEW_CONSUMERS = "newConsumers";
     public static final String INFRASTRUCTURE_COST = "infrastructureCost";
-    public static final String PRODUCTION_COST = "productionCost";
     public static final double TOTAL_PERCENT = 1.2;
     public static final double PENALTY_PERCENT = 0.2;
     public static final String PRODUCERS = "producers";

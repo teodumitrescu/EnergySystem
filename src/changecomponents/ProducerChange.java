@@ -1,5 +1,6 @@
 package changecomponents;
 
+//class that stores the producer changes in a month
 public final class ProducerChange {
 
     private int id;

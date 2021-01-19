@@ -7,6 +7,7 @@ import entities.Producer;
 
 import java.util.Collections;
 
+//class for the queen strategy applied by a distributor
 public final class QuantityStrategy implements Strategy {
 
     @Override

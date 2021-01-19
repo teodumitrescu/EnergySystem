@@ -7,6 +7,7 @@ import entities.Producer;
 
 import java.util.Collections;
 
+//class for the green strategy applied by a distributor
 public final class GreenStrategy implements Strategy {
 
     @Override

@@ -2,6 +2,7 @@ package outputcomponents;
 
 import java.util.List;
 
+//class used as the producer component of the output class
 public final class ProducerOutput {
     private int id;
     private int maxDistributors;

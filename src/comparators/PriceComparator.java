@@ -3,6 +3,8 @@ package comparators;
 import entities.Producer;
 import java.util.Comparator;
 
+//comparator used to sort producers by their price, quantity of energy
+//per distributor and then by id
 public final class PriceComparator implements Comparator<Producer> {
     @Override
     public int compare(Producer o1, Producer o2) {

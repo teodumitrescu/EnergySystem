@@ -82,11 +82,22 @@ public final class Producer extends Observable {
         this.currentDistributors = currentDistributors;
     }
 
+    /**
+     * function used in the Observer design pattern
+     * to notify the distributors that the state of
+     * the producer has changed
+     */
     public void notifyDistributors() {
         this.setChanged();
         this.notifyObservers();
     }
 
+    /**
+     * function to get and store the status of the
+     * distributors that use a producer in a month
+     * @param month for the current month when the
+     *              data is collected
+     */
     public void updateMonthlyStats(int month) {
         ArrayList<Integer> crtDistributorsId = new ArrayList<>();
         if (!getCurrentDistributors().isEmpty()) {

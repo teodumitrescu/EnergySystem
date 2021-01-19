@@ -4,6 +4,22 @@ import useful.Constants;
 
 public final class Factory {
 
+    public Factory() {
+    }
+
+    private static Factory instance = null;
+
+    /**
+     * function to make the class of Singleton design
+     * @return the singular instance of the factory
+     */
+    public static Factory getInstance() {
+        if (instance == null) {
+            instance = new Factory();
+        }
+        return instance;
+    }
+
     /**
      * function that creates entities as consumers or distributors
      * @param type consumer or distributor
@@ -18,11 +34,5 @@ public final class Factory {
         } else {
             return new Distributor(id, initialBudget);
         }
-    }
-
-    public Producer createProducer(final int id, final EnergyType energyType,
-                                   final int maxDistributors, final double priceKW,
-                                   final int energyPerDistributor) {
-        return new Producer(id, energyType, maxDistributors, priceKW, energyPerDistributor);
     }
 }

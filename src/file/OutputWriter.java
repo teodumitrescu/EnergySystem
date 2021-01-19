@@ -21,17 +21,17 @@ import java.util.List;
 
 public final class OutputWriter {
 
-    private String filepath;
+    private final String filepath;
 
     public OutputWriter(final String filepath) {
         this.filepath = filepath;
     }
 
-    /**
-     * function that writes a the output in a JSON structure in a file
-     * @throws IOException
-     */
 
+    /**
+     * function to create the output for the consumers
+     * @return a list with the consumers info for output
+     */
     public List<ConsumerOutput> initializeConsumers() {
 
         List<ConsumerOutput> consumerOutputs = new ArrayList<>();
@@ -44,6 +44,10 @@ public final class OutputWriter {
         return consumerOutputs;
     }
 
+    /**
+     * function to create the output for the distributors
+     * @return a list with the distributors info for output
+     */
     public List<DistributorOutput> initializeDistributors() {
 
         List<DistributorOutput> distributorOutputs = new ArrayList<>();
@@ -66,6 +70,10 @@ public final class OutputWriter {
         return distributorOutputs;
     }
 
+    /**
+     * function to create the output for the producers
+     * @return a list with the producers info for output
+     */
     public List<ProducerOutput> initializeProducers() {
 
         List<ProducerOutput> producerOutputs = new ArrayList<>();
@@ -80,6 +88,10 @@ public final class OutputWriter {
         return producerOutputs;
     }
 
+    /**
+     * function that writes a the output in a JSON structure in a file
+     * @throws IOException
+     */
     public void writeData() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File(filepath);
@@ -90,7 +102,6 @@ public final class OutputWriter {
         List<ProducerOutput> producerOutputs = this.initializeProducers();
 
         OutputData output = new OutputData(consumerOutputs, distributorOutputs, producerOutputs);
-        System.out.println(output);
         writer.writeValue(file, output);
     }
 }
